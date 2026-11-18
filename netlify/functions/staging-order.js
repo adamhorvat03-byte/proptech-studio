@@ -1,6 +1,6 @@
 const nodemailer = require('nodemailer');
 
-const RECIPIENT = process.env.RECIPIENT_EMAIL || process.env.GMAIL_USER || 'adam.horvat03@gmail.com';
+const RECIPIENT = process.env.GMAIL_USER || 'adam.horvat03@gmail.com';
 
 const headers = {
   'Content-Type': 'application/json; charset=utf-8',
