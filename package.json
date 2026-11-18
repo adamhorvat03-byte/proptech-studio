@@ -1,0 +1,15 @@
+{
+  "name": "proptech-studio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "PropTech Studio – AI Virtual Staging & PDF Oceňovanie nehnuteľností pre realitné kancelárie (SK/CZ)",
+  "scripts": {
+    "dev": "netlify dev"
+  },
+  "dependencies": {
+    "nodemailer": "^6.9.16"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

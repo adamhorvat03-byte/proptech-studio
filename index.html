@@ -1,0 +1,2047 @@
+<!DOCTYPE html>
+<html lang="sk" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PropTech Studio – AI Staging &amp; Oceňovanie nehnuteľností | B2B Nástroj pre RK</title>
+  <meta name="description" content="Získajte viac exkluzívnych náborov a predajte prázdne byty o 40 % rýchlejšie. Okamžitý klientsky PDF Oceňovač nehnuteľností s logom vašej RK a AI Virtual Staging." />
+
+  <!-- Google Fonts: Plus Jakarta Sans & Playfair Display -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            navy: {
+              DEFAULT: '#0F172A',
+              light: '#1E293B',
+              dark: '#090E1A',
+            },
+            slateSoft: '#F8FAFC',
+            amberGold: {
+              DEFAULT: '#D97706',
+              hover: '#B45309',
+              light: '#FEF3C7',
+              border: '#F59E0B',
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'Inter', 'system-ui', 'sans-serif'],
+          },
+          boxShadow: {
+            'architect': '0 20px 45px -15px rgba(15, 23, 42, 0.10), 0 4px 16px -4px rgba(15, 23, 42, 0.05)',
+            'a4': '0 25px 50px -12px rgba(15, 23, 42, 0.18), 0 0 0 1px rgba(15, 23, 42, 0.08)',
+            'gold': '0 10px 25px -5px rgba(217, 119, 6, 0.35)',
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- html2pdf.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" defer></script>
+
+  <style>
+    /* Architektonická mriežka v pozadí Hero sekcie */
+    .bg-arch-grid {
+      background-color: #F8FAFC;
+      background-image: 
+        linear-gradient(to right, rgba(15, 23, 42, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(15, 23, 42, 0.04) 1px, transparent 1px);
+      background-size: 36px 36px;
+    }
+
+    /* Before / After Slider */
+    .ba-slider-container {
+      position: relative;
+      overflow: hidden;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: pan-y;
+    }
+
+    .ba-before-layer {
+      clip-path: inset(0 calc(100% - var(--slider-pos, 50%)) 0 0);
+      will-change: clip-path;
+    }
+
+    .ba-divider {
+      left: var(--slider-pos, 50%);
+      transform: translateX(-50%);
+      will-change: left;
+    }
+
+    /* A4 Report Preview */
+    .a4-preview-sheet {
+      background: #FFFFFF;
+      color: #0F172A;
+      width: 100%;
+      max-width: 794px;
+      margin: 0 auto;
+      transition: all 0.2s ease;
+    }
+
+    /* Vlastný štýl pre posuvníky a vstupy */
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      opacity: 1;
+    }
+
+    /* Aktívna karta štýlu zariadenia */
+    .style-card-radio:checked + .style-card-body {
+      border-color: #D97706;
+      background-color: #FFFBEB;
+      box-shadow: 0 0 0 2px #D97706;
+    }
+
+    .mode-radio:checked + .mode-card-body {
+      border-color: #0F172A;
+      background-color: #F8FAFC;
+      box-shadow: 0 0 0 2px #0F172A;
+    }
+
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #pdf-report-sheet, #pdf-report-sheet * {
+        visibility: visible;
+      }
+      #pdf-report-sheet {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        box-shadow: none !important;
+      }
+    }
+  </style>
+</head>
+<body class="bg-slateSoft text-navy font-sans antialiased selection:bg-amberGold selection:text-white">
+
+  <!-- ===================================================================== -->
+  <!-- TOP NAVIGATION BAR (STICKY)                                           -->
+  <!-- ===================================================================== -->
+  <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200/90 transition-all">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        
+        <!-- Logo + Badge -->
+        <div class="flex items-center gap-3">
+          <a href="#prehlad" class="flex items-center gap-3 group focus:outline-none">
+            <div class="w-10 h-10 rounded-lg bg-navy flex items-center justify-center text-white font-extrabold text-lg shadow-sm border border-slate-700 group-hover:border-amberGold transition-colors">
+              <svg class="w-5 h-5 text-amberGold" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6M9 10h.01M15 10h.01" />
+              </svg>
+            </div>
+            <div>
+              <span class="text-xl font-extrabold tracking-tight text-navy">PropTech <span class="text-amberGold">Studio</span></span>
+            </div>
+          </a>
+          <span class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-700 border border-slate-200">
+            <span class="w-1.5 h-1.5 rounded-full bg-amberGold"></span>
+            SK / CZ Realitný nástroj
+          </span>
+        </div>
+
+        <!-- Desktop Navigation Links -->
+        <nav class="hidden lg:flex items-center gap-1 bg-slate-100/80 p-1.5 rounded-xl border border-slate-200/70" aria-label="Hlavná navigácia">
+          <button type="button" data-nav-target="prehlad" class="nav-tab-btn px-3.5 py-2 rounded-lg text-sm font-semibold transition-all bg-white text-navy shadow-sm">
+            Prehľad &amp; Ukážky
+          </button>
+          <button type="button" data-nav-target="pdf-ocenovac" class="nav-tab-btn px-3.5 py-2 rounded-lg text-sm font-semibold transition-all text-slate-600 hover:text-navy">
+            PDF Oceňovač (Nástroj)
+          </button>
+          <button type="button" data-nav-target="ai-staging" class="nav-tab-btn px-3.5 py-2 rounded-lg text-sm font-semibold transition-all text-slate-600 hover:text-navy">
+            AI Virtual Staging (Objednávka)
+          </button>
+          <button type="button" data-nav-target="cennik" class="nav-tab-btn px-3.5 py-2 rounded-lg text-sm font-semibold transition-all text-slate-600 hover:text-navy">
+            Cenník
+          </button>
+        </nav>
+
+        <!-- Primary CTA + Mobile Hamburger -->
+        <div class="flex items-center gap-3">
+          <a href="#pdf-ocenovac" data-scroll-to="pdf-ocenovac" class="hidden sm:inline-flex items-center gap-2 bg-navy hover:bg-navy-light text-white text-sm font-bold px-5 py-2.5 rounded-lg shadow-sm border border-navy transition-all hover:shadow-md">
+            <span>Vyskúšať nástroje</span>
+            <svg class="w-4 h-4 text-amberGold" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </a>
+
+          <!-- Mobile menu button -->
+          <button id="mobileMenuBtn" type="button" class="lg:hidden inline-flex items-center justify-center p-2.5 rounded-lg text-navy hover:bg-slate-100 border border-slate-200 focus:outline-none" aria-label="Otvoriť menu" aria-expanded="false">
+            <svg id="menuIconOpen" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+            <svg id="menuIconClose" class="w-6 h-6 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobileMenuDrawer" class="hidden lg:hidden bg-white border-b border-slate-200 px-4 pt-3 pb-5 space-y-2 shadow-lg">
+      <div class="pb-2 mb-2 border-b border-slate-100 flex items-center justify-between">
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-700">
+          <span class="w-1.5 h-1.5 rounded-full bg-amberGold"></span>
+          SK / CZ Realitný nástroj
+        </span>
+      </div>
+      <button type="button" data-nav-target="prehlad" class="mobile-nav-btn w-full text-left px-3.5 py-2.5 rounded-lg text-sm font-semibold text-navy hover:bg-slate-100 block">
+        Prehľad &amp; Ukážky
+      </button>
+      <button type="button" data-nav-target="pdf-ocenovac" class="mobile-nav-btn w-full text-left px-3.5 py-2.5 rounded-lg text-sm font-semibold text-navy hover:bg-slate-100 block">
+        PDF Oceňovač (Nástroj)
+      </button>
+      <button type="button" data-nav-target="ai-staging" class="mobile-nav-btn w-full text-left px-3.5 py-2.5 rounded-lg text-sm font-semibold text-navy hover:bg-slate-100 block">
+        AI Virtual Staging (Objednávka)
+      </button>
+      <button type="button" data-nav-target="cennik" class="mobile-nav-btn w-full text-left px-3.5 py-2.5 rounded-lg text-sm font-semibold text-navy hover:bg-slate-100 block">
+        Cenník
+      </button>
+      <div class="pt-2">
+        <a href="#pdf-ocenovac" data-scroll-to="pdf-ocenovac" class="w-full inline-flex items-center justify-center gap-2 bg-amberGold hover:bg-amberGold-hover text-white text-sm font-bold px-5 py-3 rounded-lg shadow-sm">
+          Vyskúšať nástroje
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- ===================================================================== -->
+    <!-- SECTION 1: HERO & INTERACTIVE BEFORE/AFTER SLIDER                     -->
+    <!-- ===================================================================== -->
+    <section id="prehlad" class="bg-arch-grid border-b border-slate-200/80 py-12 sm:py-16 lg:py-24">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+          
+          <!-- Left Column: Copy & CTAs -->
+          <div class="lg:col-span-6 space-y-6">
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amberGold/10 border border-amberGold/30 text-amberGold-hover text-xs sm:text-sm font-bold tracking-wide">
+              <svg class="w-4 h-4 text-amberGold shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+              </svg>
+              <span>Nástroj pre moderné realitné kancelárie</span>
+            </div>
+
+            <h1 class="text-3xl sm:text-4xl lg:text-[42px] font-extrabold text-navy tracking-tight leading-[1.15]">
+              Získajte viac exkluzívnych náborov a predajte prázdne byty o <span class="text-amberGold underline decoration-amberGold/30 decoration-4 underline-offset-4">40 % rýchlejšie.</span>
+            </h1>
+
+            <p class="text-base sm:text-lg text-slate-600 leading-relaxed">
+              Vygenerujte klientovi profesionálny PDF odhad trhovej ceny s logom vašej realitky za 10 sekúnd a nechajte prázdne izby virtuálne zariadiť pomocou AI.
+            </p>
+
+            <!-- Two Primary Action Buttons -->
+            <div class="flex flex-col sm:flex-row gap-3.5 pt-2">
+              <a href="#pdf-ocenovac" data-scroll-to="pdf-ocenovac" class="inline-flex items-center justify-center gap-2.5 bg-navy hover:bg-navy-light text-white font-bold px-6 py-4 rounded-xl shadow-architect transition-all hover:-translate-y-0.5 text-sm sm:text-base">
+                <svg class="w-5 h-5 text-amberGold shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <span>Spustiť PDF Oceňovač</span>
+              </a>
+
+              <a href="#ai-staging" data-scroll-to="ai-staging" class="inline-flex items-center justify-center gap-2.5 bg-amberGold hover:bg-amberGold-hover text-white font-bold px-6 py-4 rounded-xl shadow-gold transition-all hover:-translate-y-0.5 text-sm sm:text-base">
+                <svg class="w-5 h-5 text-white shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <span>Objednať AI Virtual Staging</span>
+              </a>
+            </div>
+
+            <!-- Value Pillars -->
+            <div class="grid grid-cols-3 gap-4 pt-6 border-t border-slate-200/90">
+              <div>
+                <div class="text-xl sm:text-2xl font-extrabold text-navy">10 sekúnd</div>
+                <div class="text-xs sm:text-sm text-slate-500 font-medium">Vygenerovanie A4 PDF odhadu</div>
+              </div>
+              <div>
+                <div class="text-xl sm:text-2xl font-extrabold text-navy">100 % White-Label</div>
+                <div class="text-xs sm:text-sm text-slate-500 font-medium">Logo a kontakt vašej realitky</div>
+              </div>
+              <div>
+                <div class="text-xl sm:text-2xl font-extrabold text-amberGold">+40 % záujem</div>
+                <div class="text-xs sm:text-sm text-slate-500 font-medium">Vyššia klikanosť na inzeráty</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Interactive Draggable Before/After Comparison Slider -->
+          <div class="lg:col-span-6">
+            <div class="bg-white p-3 sm:p-4 rounded-2xl shadow-architect border border-slate-200">
+              
+              <!-- Top Bar of Showcase Card -->
+              <div class="flex flex-wrap items-center justify-between gap-2 pb-3 mb-3 border-b border-slate-100 text-xs font-semibold text-slate-500">
+                <div class="flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                  <span class="text-navy font-bold">Interaktívne porovnanie:</span> Potiahnite posuvník doľava alebo doprava
+                </div>
+                <span class="text-amberGold-hover bg-amberGold/10 px-2.5 py-0.5 rounded-md font-bold">Fotorealistická AI vizualizácia</span>
+              </div>
+
+              <!-- Before / After Slider Viewport -->
+              <div id="baSlider" class="ba-slider-container relative rounded-xl overflow-hidden aspect-[16/11] bg-slate-900 cursor-ew-resize select-none" style="--slider-pos: 50%;">
+                
+                <!-- AFTER IMAGE (Right side / Full base layer) -->
+                <img
+                  id="baAfterImg"
+                  src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1400&q=85"
+                  alt="AI Virtual Staging (Škandinávsky štýl)"
+                  class="w-full h-full object-cover block pointer-events-none"
+                />
+
+                <!-- BEFORE IMAGE (Left side / Clipped overlay layer) -->
+                <div id="baBeforeLayer" class="ba-before-layer absolute inset-0 w-full h-full pointer-events-none">
+                  <img
+                    id="baBeforeImg"
+                    src="https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1400&q=85"
+                    alt="Pôvodný stav (Prázdny byt)"
+                    class="w-full h-full object-cover block filter saturate-50 contrast-95 brightness-95"
+                  />
+                  <!-- Subtle vignette on empty room for contrast -->
+                  <div class="absolute inset-0 bg-slate-900/15"></div>
+                </div>
+
+                <!-- LEFT LABEL: Pôvodný stav (Prázdny byt) -->
+                <div class="absolute top-3.5 left-3.5 z-10 pointer-events-none">
+                  <span id="baBeforeLabel" class="inline-flex items-center gap-1.5 bg-navy/90 backdrop-blur-md text-white text-xs sm:text-sm font-bold px-3.5 py-1.5 rounded-lg border border-white/15 shadow-md">
+                    <span class="w-2 h-2 rounded-full bg-slate-400"></span>
+                    Pôvodný stav (Prázdny byt)
+                  </span>
+                </div>
+
+                <!-- RIGHT LABEL: AI Virtual Staging (Škandinávsky štýl) -->
+                <div class="absolute top-3.5 right-3.5 z-10 pointer-events-none">
+                  <span id="baAfterLabel" class="inline-flex items-center gap-1.5 bg-amberGold text-white text-xs sm:text-sm font-bold px-3.5 py-1.5 rounded-lg border border-white/25 shadow-md">
+                    <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                    <span>AI Virtual Staging (Škandinávsky štýl)</span>
+                  </span>
+                </div>
+
+                <!-- VERTICAL DIVIDER HANDLE -->
+                <div id="baDivider" class="ba-divider absolute top-0 bottom-0 w-0.5 bg-white shadow-[0_0_12px_rgba(0,0,0,0.6)] z-20 pointer-events-none">
+                  <div class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-11 h-11 rounded-full bg-navy text-white border-2 border-amberGold shadow-xl flex items-center justify-center">
+                    <svg class="w-5 h-5 text-amberGold" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M8 9l-4 3 4 3m8-6l4 3-4 3" />
+                    </svg>
+                  </div>
+                </div>
+
+                <!-- Accessible Range Input Overlay -->
+                <input
+                  id="baRangeInput"
+                  type="range"
+                  min="2"
+                  max="98"
+                  value="50"
+                  aria-label="Posuvník porovnania Pôvodný stav a AI Virtual Staging"
+                  class="absolute inset-0 w-full h-full opacity-0 cursor-ew-resize z-30 m-0"
+                />
+              </div>
+
+              <!-- Bottom Preset Selector Bar -->
+              <div class="mt-3 pt-2 flex flex-wrap items-center justify-between gap-2 text-xs">
+                <span class="text-slate-500 font-semibold">Ukážky miestností:</span>
+                <div class="flex flex-wrap gap-1.5">
+                  <button type="button" data-ba-preset="0" class="ba-preset-btn px-3 py-1.5 rounded-lg font-bold bg-navy text-white transition-all">
+                    1. Obývačka (Škandinávsky štýl)
+                  </button>
+                  <button type="button" data-ba-preset="1" class="ba-preset-btn px-3 py-1.5 rounded-lg font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-all">
+                    2. Spálňa (Moderný minimalizmus)
+                  </button>
+                  <button type="button" data-ba-preset="2" class="ba-preset-btn px-3 py-1.5 rounded-lg font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-all">
+                    3. Jedáleň (Luxusný štýl)
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- SECTION 2: INSTANT CLIENT-SIDE PDF PROPERTY VALUATION TOOL            -->
+    <!-- ===================================================================== -->
+    <section id="pdf-ocenovac" class="py-16 sm:py-24 bg-white border-b border-slate-200">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Section Heading -->
+        <div class="max-w-3xl mb-12">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-navy text-amberGold text-xs font-bold uppercase tracking-wider mb-3">
+            Nástroj č. 1 • 100 % Klientsky generátor
+          </div>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-navy tracking-tight">
+            Okamžitý PDF Oceňovač nehnuteľností
+          </h2>
+          <p class="mt-3 text-base sm:text-lg text-slate-600">
+            Vytvorte na obhliadke alebo pred náborovým stretnutím autoritatívny cenový odhad na hlavičkovom papieri vašej realitnej kancelárie. Výpočet aj export do formátu A4 PDF prebieha okamžite vo vašom prehliadači.
+          </p>
+        </div>
+
+        <!-- Two-Column Interactive Workspace -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
+          
+          <!-- LEFT COLUMN: INPUT FORM (5 cols on lg) -->
+          <div class="lg:col-span-5 bg-slateSoft rounded-2xl border border-slate-200/90 p-6 sm:p-7 shadow-sm space-y-7">
+            
+            <!-- Part 1: Branding realitnej kancelárie (voliteľné) -->
+            <div>
+              <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-200">
+                <h3 class="text-base font-extrabold text-navy flex items-center gap-2">
+                  <span class="w-6 h-6 rounded-full bg-navy text-amberGold text-xs flex items-center justify-center font-bold">1</span>
+                  Branding realitnej kancelárie <span class="text-xs font-normal text-slate-500">(voliteľné)</span>
+                </h3>
+              </div>
+
+              <div class="space-y-4">
+                <div>
+                  <label for="valAgencyName" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
+                    Názov realitnej kancelárie
+                  </label>
+                  <input
+                    id="valAgencyName"
+                    type="text"
+                    value="Vaša Realitná Kancelária s.r.o."
+                    placeholder="Napr. Prestige Reality Slovakia s.r.o."
+                    class="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm font-medium text-navy focus:border-amberGold focus:ring-2 focus:ring-amberGold/20 focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label for="valAgentContact" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
+                    Meno a priezvisko makléra + telefón
+                  </label>
+                  <input
+                    id="valAgentContact"
+                    type="text"
+                    value="Ing. Martin Kováč | +421 905 123 456"
+                    placeholder="Napr. Mgr. Jana Nováková | +421 911 222 333"
+                    class="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm font-medium text-navy focus:border-amberGold focus:ring-2 focus:ring-amberGold/20 focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label for="valLogoUpload" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
+                    Nahrať logo kancelárie
+                  </label>
+                  <div class="flex items-center gap-3">
+                    <label for="valLogoUpload" class="flex-1 cursor-pointer inline-flex items-center justify-center gap-2 rounded-lg border border-dashed border-slate-300 bg-white hover:bg-slate-50 px-3.5 py-2.5 text-xs font-bold text-navy transition-colors">
+                      <svg class="w-4 h-4 text-amberGold" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                      </svg>
+                      <span id="logoUploadLabel">Vybrať súbor loga (PNG / JPG / SVG)</span>
+                    </label>
+                    <input id="valLogoUpload" type="file" accept="image/*" class="hidden" />
+                    <button id="clearLogoBtn" type="button" class="hidden px-2.5 py-2 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-rose-600 hover:bg-rose-50" title="Odstrániť logo">
+                      Zrušiť
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Part 2: Parametre nehnuteľnosti -->
+            <div>
+              <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-200">
+                <h3 class="text-base font-extrabold text-navy flex items-center gap-2">
+                  <span class="w-6 h-6 rounded-full bg-navy text-amberGold text-xs flex items-center justify-center font-bold">2</span>
+                  Parametre nehnuteľnosti
+                </h3>
+              </div>
+
+              <div class="space-y-4">
+                <!-- Lokalita / Mesto -->
+                <div>
+                  <label for="valLocation" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
+                    Lokalita / Mesto (Základná trhová sadzba €/m²)
+                  </label>
+                  <select
+                    id="valLocation"
+                    class="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm font-semibold text-navy focus:border-amberGold focus:ring-2 focus:ring-amberGold/20 focus:outline-none"
+                  >
+                    <option value="3650" data-city="Bratislava">Bratislava – 3 650 €/m²</option>
+                    <option value="2550" data-city="Košice">Košice – 2 550 €/m²</option>
+                    <option value="2450" data-city="Trnava">Trnava – 2 450 €/m²</option>
+                    <option value="2350" data-city="Žilina">Žilina – 2 350 €/m²</option>
+                    <option value="2150" data-city="Prešov">Prešov – 2 150 €/m²</option>
+                    <option value="2100" data-city="Banská Bystrica">Banská Bystrica – 2 100 €/m²</option>
+                    <option value="2050" data-city="Trenčín">Trenčín – 2 050 €/m²</option>
+                    <option value="2050" data-city="Nitra">Nitra – 2 050 €/m²</option>
+                    <option value="1680" data-city="Okresné mesto / Ostatné">Okresné mesto / Ostatné – 1 680 €/m²</option>
+                  </select>
+                </div>
+
+                <!-- Typ nehnuteľnosti & Počet izieb -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                  <div>
+                    <label for="valPropertyType" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
+                      Typ nehnuteľnosti
+                    </label>
+                    <select
+                      id="valPropertyType"
+                      class="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm font-semibold text-navy focus:border-amberGold focus:ring-2 focus:ring-amberGold/20 focus:outline-none"
+                    >
+                      <option value="Byt">Byt</option>
+                      <option value="Rodinný dom">Rodinný dom</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label for="valRooms" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
+                      Počet izieb
+                    </label>
+                    <select
+                      id="valRooms"
+                      class="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm font-semibold text-navy focus:border-amberGold focus:ring-2 focus:ring-amberGold/20 focus:outline-none"
+                    >
+                      <option value="1-izbový">1-izbový</option>
+                      <option value="2-izbový">2-izbový</option>
+                      <option value="3-izbový" selected>3-izbový</option>
+                      <option value="4+ izbový">4+ izbový</option>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- Podlahová plocha v m² & Konštrukcia -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                  <div>
+                    <label for="valArea" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
+                      Podlahová plocha v m²
+                    </label>
+                    <div class="relative">
+                      <input
+                        id="valArea"
+                        type="number"
+                        min="15"
+                        max="1000"
+                        step="1"
+                        value="68"
+                        class="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 pr-12 text-sm font-bold text-navy focus:border-amberGold focus:ring-2 focus:ring-amberGold/20 focus:outline-none"
+                      />
+                      <span class="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">m²</span>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label for="valConstruction" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
+                      Konštrukcia
+                    </label>
+                    <select
+                      id="valConstruction"
+                      class="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm font-semibold text-navy focus:border-amberGold focus:ring-2 focus:ring-amberGold/20 focus:outline-none"
+                    >
+                      <option value="1.00" data-label="Panel">Panel [1.00]</option>
+                      <option value="1.05" data-label="Tehla" selected>Tehla [1.05]</option>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- Stav nehnuteľnosti -->
+                <div>
+                  <label for="valCondition" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
+                    Stav nehnuteľnosti (Koeficient technického stavu)
+                  </label>
+                  <select
+                    id="valCondition"
+                    class="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm font-semibold text-navy focus:border-amberGold focus:ring-2 focus:ring-amberGold/20 focus:outline-none"
+                  >
+                    <option value="0.82" data-label="Pôvodný stav">Pôvodný stav [0.82]</option>
+                    <option value="0.95" data-label="Čiastočná rekonštrukcia">Čiastočná rekonštrukcia [0.95]</option>
+                    <option value="1.08" data-label="Kompletná rekonštrukcia" selected>Kompletná rekonštrukcia [1.08]</option>
+                    <option value="1.18" data-label="Novostavba">Novostavba [1.18]</option>
+                  </select>
+                </div>
+
+                <!-- Checkboxes for extras -->
+                <div>
+                  <span class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">
+                    Príslušenstvo a benefity nehnuteľnosti
+                  </span>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    <label class="flex items-center gap-2.5 p-2.5 rounded-lg border border-slate-200 bg-white cursor-pointer hover:border-amberGold/60 transition-colors">
+                      <input id="extraBalcony" type="checkbox" checked class="w-4 h-4 rounded text-amberGold focus:ring-amberGold border-slate-300" />
+                      <span class="text-xs font-semibold text-navy">Balkón / Lodžia <span class="text-amberGold-hover font-bold">(+4 %)</span></span>
+                    </label>
+
+                    <label class="flex items-center gap-2.5 p-2.5 rounded-lg border border-slate-200 bg-white cursor-pointer hover:border-amberGold/60 transition-colors">
+                      <input id="extraElevator" type="checkbox" checked class="w-4 h-4 rounded text-amberGold focus:ring-amberGold border-slate-300" />
+                      <span class="text-xs font-semibold text-navy">Výťah <span class="text-amberGold-hover font-bold">(+2 %)</span></span>
+                    </label>
+
+                    <label class="flex items-center gap-2.5 p-2.5 rounded-lg border border-slate-200 bg-white cursor-pointer hover:border-amberGold/60 transition-colors">
+                      <input id="extraCellar" type="checkbox" class="w-4 h-4 rounded text-amberGold focus:ring-amberGold border-slate-300" />
+                      <span class="text-xs font-semibold text-navy">Pivnica <span class="text-amberGold-hover font-bold">(+2 %)</span></span>
+                    </label>
+
+                    <label class="flex items-center gap-2.5 p-2.5 rounded-lg border border-slate-200 bg-white cursor-pointer hover:border-amberGold/60 transition-colors">
+                      <input id="extraParking" type="checkbox" class="w-4 h-4 rounded text-amberGold focus:ring-amberGold border-slate-300" />
+                      <span class="text-xs font-semibold text-navy">Garáž / Parkovacie státie <span class="text-amberGold-hover font-bold">(+8 000 €)</span></span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Mobile / Quick PDF Action inside Form -->
+            <div class="pt-2">
+              <button
+                id="downloadPdfBtnLeft"
+                type="button"
+                class="w-full inline-flex items-center justify-center gap-2.5 bg-amberGold hover:bg-amberGold-hover text-white font-bold px-5 py-3.5 rounded-xl shadow-gold transition-all text-sm"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <span>Stiahnuť hotový PDF report</span>
+              </button>
+            </div>
+
+          </div>
+
+          <!-- RIGHT COLUMN: LIVE BRANDED A4 REPORT PREVIEW & EXPORT (7 cols on lg) -->
+          <div class="lg:col-span-7 space-y-4">
+            
+            <!-- Action Header Bar above A4 Sheet -->
+            <div class="flex flex-wrap items-center justify-between gap-3 bg-slate-900 text-white px-5 py-3.5 rounded-xl shadow-sm">
+              <div class="flex items-center gap-2.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span class="text-xs sm:text-sm font-bold tracking-wide">Živý náhľad A4 dokumentu (Pripravené na tlač a odoslanie)</span>
+              </div>
+              <button
+                id="downloadPdfBtnTop"
+                type="button"
+                class="inline-flex items-center gap-2 bg-amberGold hover:bg-amberGold-hover text-white text-xs sm:text-sm font-bold px-4 py-2 rounded-lg shadow transition-all"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                <span id="pdfBtnLabel">Stiahnuť PDF report</span>
+              </button>
+            </div>
+
+            <!-- THE A4 REPORT SHEET (Export Target for html2pdf.js) -->
+            <div class="bg-slate-200/70 p-3 sm:p-6 rounded-2xl border border-slate-300/80 overflow-x-auto">
+              <div id="pdf-report-sheet" class="a4-preview-sheet rounded-lg shadow-a4 overflow-hidden border border-slate-200">
+                
+                <!-- A4 Header: Deep Navy & Warm Gold Accent -->
+                <div class="bg-navy text-white px-6 sm:px-8 py-6 border-b-4 border-amberGold flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                  <div class="flex items-center gap-4">
+                    <!-- Agency Logo Preview Container -->
+                    <div id="pdfLogoContainer" class="w-14 h-14 rounded-lg bg-white/10 border border-white/20 flex items-center justify-center overflow-hidden shrink-0">
+                      <img id="pdfLogoImg" src="" alt="Logo RK" class="hidden w-full h-full object-contain bg-white p-1" />
+                      <div id="pdfLogoFallback" class="text-amberGold font-extrabold text-xl tracking-wider">RK</div>
+                    </div>
+                    <div>
+                      <div class="text-[11px] font-bold uppercase tracking-widest text-amberGold">Odborný trhový odhad nehnuteľnosti</div>
+                      <h3 id="pdfAgencyName" class="text-lg sm:text-xl font-extrabold text-white mt-0.5">Vaša Realitná Kancelária s.r.o.</h3>
+                      <p class="text-xs text-slate-300 mt-0.5">Certifikovaná analýza porovnateľných trhových cien v SR</p>
+                    </div>
+                  </div>
+                  <div class="sm:text-right border-t sm:border-t-0 border-white/10 pt-3 sm:pt-0">
+                    <div class="text-[11px] uppercase tracking-wider text-slate-400 font-semibold">Dátum vypracovania</div>
+                    <div id="pdfCurrentDate" class="text-sm font-bold text-white mt-0.5">15. 11. 2026</div>
+                    <div class="text-[11px] text-amberGold font-semibold mt-0.5">Ref: #SK-2026-A4</div>
+                  </div>
+                </div>
+
+                <!-- A4 Body Content -->
+                <div class="p-6 sm:p-8 space-y-6 bg-white">
+                  
+                  <!-- Highlighted Estimated Value Box -->
+                  <div class="rounded-xl bg-slateSoft border-2 border-navy/15 p-5 sm:p-6 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 bottom-0 w-1.5 bg-amberGold"></div>
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                      <div>
+                        <span class="inline-block text-[11px] font-extrabold uppercase tracking-wider text-amberGold-hover bg-amberGold/15 px-2.5 py-0.5 rounded mb-1.5">
+                          Odhadovaná trhová hodnota nehnuteľnosti
+                        </span>
+                        <div class="text-xs text-slate-500 font-medium">
+                          Odporúčané cenové rozpätie pre predaj (rozptyl -4 % až +4 %):
+                        </div>
+                        <div id="pdfPriceRange" class="text-2xl sm:text-3xl font-extrabold text-navy tracking-tight mt-1">
+                          271 900 € – 294 600 €
+                        </div>
+                      </div>
+
+                      <div class="md:text-right bg-white px-4 py-3 rounded-lg border border-slate-200 shrink-0">
+                        <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Stredná trhová hodnota</div>
+                        <div id="pdfCenterPrice" class="text-xl font-extrabold text-amberGold-hover mt-0.5">283 250 €</div>
+                        <div class="text-xs font-bold text-navy mt-0.5">
+                          Priemer: <span id="pdfPricePerM2">4 165 €/m²</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Property Specifications Table -->
+                  <div>
+                    <h4 class="text-xs font-extrabold uppercase tracking-wider text-slate-500 mb-3 flex items-center gap-2">
+                      <span class="w-2 h-2 rounded-full bg-amberGold"></span>
+                      Technická špecifikácia a vstupné parametre nehnuteľnosti
+                    </h4>
+
+                    <div class="border border-slate-200 rounded-xl overflow-hidden">
+                      <table class="w-full text-left border-collapse text-xs sm:text-sm">
+                        <tbody class="divide-y divide-slate-200">
+                          <tr class="bg-slate-50/70">
+                            <td class="py-2.5 px-4 font-semibold text-slate-600 w-2/5">Lokalita / Mesto</td>
+                            <td id="pdfSpecLocation" class="py-2.5 px-4 font-bold text-navy">Bratislava (základ 3 650 €/m²)</td>
+                          </tr>
+                          <tr>
+                            <td class="py-2.5 px-4 font-semibold text-slate-600">Typ a dispozícia nehnuteľnosti</td>
+                            <td id="pdfSpecTypeRooms" class="py-2.5 px-4 font-bold text-navy">Byt • 3-izbový</td>
+                          </tr>
+                          <tr class="bg-slate-50/70">
+                            <td class="py-2.5 px-4 font-semibold text-slate-600">Podlahová plocha</td>
+                            <td id="pdfSpecArea" class="py-2.5 px-4 font-bold text-navy">68 m²</td>
+                          </tr>
+                          <tr>
+                            <td class="py-2.5 px-4 font-semibold text-slate-600">Technický stav nehnuteľnosti</td>
+                            <td id="pdfSpecCondition" class="py-2.5 px-4 font-bold text-navy">Kompletná rekonštrukcia (koeficient 1.08)</td>
+                          </tr>
+                          <tr class="bg-slate-50/70">
+                            <td class="py-2.5 px-4 font-semibold text-slate-600">Konštrukcia objektu</td>
+                            <td id="pdfSpecConstruction" class="py-2.5 px-4 font-bold text-navy">Tehla (koeficient 1.05)</td>
+                          </tr>
+                          <tr>
+                            <td class="py-2.5 px-4 font-semibold text-slate-600">Vybavenie a príslušenstvo</td>
+                            <td id="pdfSpecExtras" class="py-2.5 px-4 font-bold text-navy">Balkón / Lodžia (+4 %), Výťah (+2 %)</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  <!-- Valuation Commentary Box -->
+                  <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                    <div class="p-3.5 rounded-lg bg-slate-50 border border-slate-200">
+                      <div class="font-bold text-slate-500 uppercase text-[10px]">Lokálny dopyt</div>
+                      <div class="font-extrabold text-navy text-sm mt-0.5">Vysoká likvidita</div>
+                      <p class="text-slate-500 mt-1 text-[11px] leading-snug">Lokalita vykazuje stabilný dopyt kupujúcich v segmente bývania.</p>
+                    </div>
+                    <div class="p-3.5 rounded-lg bg-slate-50 border border-slate-200">
+                      <div class="font-bold text-slate-500 uppercase text-[10px]">Odporúčaná stratégia</div>
+                      <div class="font-extrabold text-navy text-sm mt-0.5">Home / AI Staging</div>
+                      <p class="text-slate-500 mt-1 text-[11px] leading-snug">Profesionálna vizuálna prezentácia skracuje dobu predaja až o 40 %.</p>
+                    </div>
+                    <div class="p-3.5 rounded-lg bg-slate-50 border border-slate-200">
+                      <div class="font-bold text-slate-500 uppercase text-[10px]">Cenová odchýlka</div>
+                      <div class="font-extrabold text-navy text-sm mt-0.5">± 4,0 % od stredu</div>
+                      <p class="text-slate-500 mt-1 text-[11px] leading-snug">Zohľadňuje poschodie, orientáciu a aktuálnu ponuku v okolí.</p>
+                    </div>
+                  </div>
+
+                  <!-- Realtor Contact Footer & Standard Market Valuation Disclaimer -->
+                  <div class="pt-4 border-t-2 border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                    <div>
+                      <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Zodpovedný realitný maklér / Kontakt</div>
+                      <div id="pdfAgentContact" class="text-sm font-extrabold text-navy mt-0.5">Ing. Martin Kováč | +421 905 123 456</div>
+                    </div>
+                    <div class="sm:text-right">
+                      <span class="inline-flex items-center gap-1.5 text-xs font-bold text-amberGold-hover bg-amberGold/10 px-3 py-1 rounded-full">
+                        Overený výstup • PropTech Studio SK
+                      </span>
+                    </div>
+                  </div>
+
+                  <!-- Disclaimer -->
+                  <p class="text-[10px] text-slate-400 leading-relaxed border-t border-slate-100 pt-3">
+                    <strong>Právne upozornenie (Disclaimer):</strong> Tento dokument slúži ako odborný orientačný odhad trhovej hodnoty nehnuteľnosti vypracovaný na základe štatistických priemerov ponukových a realizovaných cien porovnateľných nehnuteľností v danej lokalite. Dokument má informatívny charakter pre účely predajnej stratégie a nenahrádza znalecký posudok v zmysle zákona č. 382/2004 Z. z.
+                  </p>
+
+                </div>
+              </div>
+            </div>
+
+            <!-- Bottom Export Button -->
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-slateSoft p-4 rounded-xl border border-slate-200">
+              <div class="text-xs text-slate-600">
+                Súbor <code class="font-bold text-navy bg-white px-1.5 py-0.5 rounded border border-slate-200">Odhad_ceny_nehnutelnosti.pdf</code> sa vygeneruje okamžite bez odosielania dát na externý server.
+              </div>
+              <button
+                id="downloadPdfBtnBottom"
+                type="button"
+                class="w-full sm:w-auto shrink-0 inline-flex items-center justify-center gap-2 bg-navy hover:bg-navy-light text-white font-bold px-6 py-3 rounded-xl shadow-sm transition-all text-sm"
+              >
+                <svg class="w-4 h-4 text-amberGold" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <span>Stiahnuť hotový PDF report</span>
+              </button>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- SECTION 3: CONCIERGE AI VIRTUAL STAGING ORDER PORTAL                  -->
+    <!-- ===================================================================== -->
+    <section id="ai-staging" class="py-16 sm:py-24 bg-slateSoft border-b border-slate-200">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Section Heading -->
+        <div class="text-center max-w-3xl mx-auto mb-12">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-amberGold/15 text-amberGold-hover text-xs font-bold uppercase tracking-wider mb-3">
+            Nástroj č. 2 • AI Virtual Staging – Spracovanie fotiek
+          </div>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-navy tracking-tight">
+            Nahrajte fotky prázdneho alebo starého bytu a vyberte štýl zariadenia
+          </h2>
+          <p class="mt-3 text-base sm:text-lg text-slate-600">
+            Žiadne zložité promptovanie ani predražené zahraničné kredity. Nahrajte až 4 fotografie, zvoľte interiérový štýl a my vám doručíme fotorealistické vizualizácie vo vysokom rozlíšení priamo na váš e-mail.
+          </p>
+        </div>
+
+        <!-- Main Software Workflow Card -->
+        <div class="bg-white rounded-2xl shadow-architect border border-slate-200/90 overflow-hidden">
+          
+          <!-- Workflow Step Progress Header -->
+          <div class="bg-navy text-white px-6 sm:px-8 py-4 border-b border-slate-800 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <span class="w-3 h-3 rounded-full bg-amberGold"></span>
+              <span class="text-sm font-bold">Portál pre nahrávanie zákaziek • AI Virtual Staging</span>
+            </div>
+            <div id="selectedPlanBanner" class="hidden items-center gap-2 bg-amberGold/20 border border-amberGold/40 text-amberGold-light px-3 py-1 rounded-full text-xs font-bold">
+              <span>Zvolená tarifa:</span>
+              <span id="selectedPlanText" class="underline">Balík ZAKLADATEĽ (49 € / mesiac)</span>
+            </div>
+          </div>
+
+          <!-- FORM -->
+          <form id="stagingOrderForm" class="p-6 sm:p-8 lg:p-10 space-y-8" novalidate>
+            <!-- Honeypot -->
+            <input type="text" name="website_url_hp" class="hidden" tabindex="-1" autocomplete="off" />
+            <input type="hidden" id="stagingPlanInput" name="plan" value="Štandardná objednávka" />
+
+            <!-- 1 & 2: Meno makléra / RK + E-mail makléra -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div>
+                <label for="stagingAgentName" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+                  1. Meno makléra / Názov realitnej kancelárie <span class="text-amberGold">*</span>
+                </label>
+                <input
+                  id="stagingAgentName"
+                  name="agentName"
+                  type="text"
+                  required
+                  placeholder="Napr. Ing. Peter Kováč – Reality Bratislava"
+                  class="w-full rounded-xl border border-slate-300 bg-slateSoft px-4 py-3 text-sm font-medium text-navy focus:bg-white focus:border-amberGold focus:ring-2 focus:ring-amberGold/20 focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label for="stagingEmail" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+                  2. E-mail makléra pre doručenie hotových fotiek <span class="text-amberGold">*</span>
+                </label>
+                <input
+                  id="stagingEmail"
+                  name="email"
+                  type="email"
+                  required
+                  placeholder="makler@vasarealitka.sk"
+                  class="w-full rounded-xl border border-slate-300 bg-slateSoft px-4 py-3 text-sm font-medium text-navy focus:bg-white focus:border-amberGold focus:ring-2 focus:ring-amberGold/20 focus:outline-none"
+                />
+              </div>
+            </div>
+
+            <!-- 3: Typ miestnosti -->
+            <div>
+              <label for="stagingRoomType" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+                3. Typ miestnosti
+              </label>
+              <select
+                id="stagingRoomType"
+                name="roomType"
+                class="w-full sm:w-2/3 rounded-xl border border-slate-300 bg-slateSoft px-4 py-3 text-sm font-bold text-navy focus:bg-white focus:border-amberGold focus:ring-2 focus:ring-amberGold/20 focus:outline-none"
+              >
+                <option value="Obývačka">Obývačka</option>
+                <option value="Spálňa">Spálňa</option>
+                <option value="Kuchyňa s jedálňou">Kuchyňa s jedálňou</option>
+                <option value="Detská izba">Detská izba</option>
+                <option value="Pracovňa">Pracovňa</option>
+                <option value="Exteriér / Terasa">Exteriér / Terasa</option>
+              </select>
+            </div>
+
+            <!-- 4: Štýl zariadenia (Visual Radio Cards) -->
+            <div>
+              <span class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-3">
+                4. Štýl zariadenia (Vyberte vizuálny štýl)
+              </span>
+              <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+                
+                <!-- Card 1: Škandinávsky -->
+                <label class="cursor-pointer block">
+                  <input type="radio" name="style" value="Škandinávsky" checked class="style-card-radio sr-only" />
+                  <div class="style-card-body h-full rounded-xl border-2 border-slate-200 p-3.5 transition-all hover:border-amberGold/60 flex flex-col justify-between">
+                    <div>
+                      <div class="w-8 h-8 rounded-lg bg-amberGold/15 text-amberGold-hover flex items-center justify-center font-bold text-sm mb-2">
+                        01
+                      </div>
+                      <div class="font-extrabold text-sm text-navy">Škandinávsky</div>
+                      <p class="text-xs text-slate-500 mt-1 leading-snug">Svetlé drevo, béžové tóny, vzdušnosť a čistota.</p>
+                    </div>
+                    <div class="mt-3 pt-2 border-t border-slate-100 text-[11px] font-bold text-amberGold-hover">Najpredávanejší</div>
+                  </div>
+                </label>
+
+                <!-- Card 2: Moderný minimalizmus -->
+                <label class="cursor-pointer block">
+                  <input type="radio" name="style" value="Moderný minimalizmus" class="style-card-radio sr-only" />
+                  <div class="style-card-body h-full rounded-xl border-2 border-slate-200 p-3.5 transition-all hover:border-amberGold/60 flex flex-col justify-between">
+                    <div>
+                      <div class="w-8 h-8 rounded-lg bg-slate-100 text-navy flex items-center justify-center font-bold text-sm mb-2">
+                        02
+                      </div>
+                      <div class="font-extrabold text-sm text-navy">Moderný minimalizmus</div>
+                      <p class="text-xs text-slate-500 mt-1 leading-snug">Čisté línie, kontrastné detaily a moderná architektúra.</p>
+                    </div>
+                    <div class="mt-3 pt-2 border-t border-slate-100 text-[11px] font-semibold text-slate-400">Pre novostavby</div>
+                  </div>
+                </label>
+
+                <!-- Card 3: Luxusný -->
+                <label class="cursor-pointer block">
+                  <input type="radio" name="style" value="Luxusný" class="style-card-radio sr-only" />
+                  <div class="style-card-body h-full rounded-xl border-2 border-slate-200 p-3.5 transition-all hover:border-amberGold/60 flex flex-col justify-between">
+                    <div>
+                      <div class="w-8 h-8 rounded-lg bg-slate-100 text-navy flex items-center justify-center font-bold text-sm mb-2">
+                        03
+                      </div>
+                      <div class="font-extrabold text-sm text-navy">Luxusný</div>
+                      <p class="text-xs text-slate-500 mt-1 leading-snug">Mramor, zamat, teplé podsvietenie a prémiový dizajn.</p>
+                    </div>
+                    <div class="mt-3 pt-2 border-t border-slate-100 text-[11px] font-semibold text-slate-400">Prémiové byty</div>
+                  </div>
+                </label>
+
+                <!-- Card 4: Industriálny -->
+                <label class="cursor-pointer block">
+                  <input type="radio" name="style" value="Industriálny" class="style-card-radio sr-only" />
+                  <div class="style-card-body h-full rounded-xl border-2 border-slate-200 p-3.5 transition-all hover:border-amberGold/60 flex flex-col justify-between">
+                    <div>
+                      <div class="w-8 h-8 rounded-lg bg-slate-100 text-navy flex items-center justify-center font-bold text-sm mb-2">
+                        04
+                      </div>
+                      <div class="font-extrabold text-sm text-navy">Industriálny</div>
+                      <p class="text-xs text-slate-500 mt-1 leading-snug">Čierny kov, masívny dub, koža a mestský loftový charakter.</p>
+                    </div>
+                    <div class="mt-3 pt-2 border-t border-slate-100 text-[11px] font-semibold text-slate-400">Lofty &amp; mestské byty</div>
+                  </div>
+                </label>
+
+                <!-- Card 5: Útulný rodinný -->
+                <label class="cursor-pointer block">
+                  <input type="radio" name="style" value="Útulný rodinný" class="style-card-radio sr-only" />
+                  <div class="style-card-body h-full rounded-xl border-2 border-slate-200 p-3.5 transition-all hover:border-amberGold/60 flex flex-col justify-between">
+                    <div>
+                      <div class="w-8 h-8 rounded-lg bg-slate-100 text-navy flex items-center justify-center font-bold text-sm mb-2">
+                        05
+                      </div>
+                      <div class="font-extrabold text-sm text-navy">Útulný rodinný</div>
+                      <p class="text-xs text-slate-500 mt-1 leading-snug">Teplé textílie, zeleň, mäkké koberce a domáca atmosféra.</p>
+                    </div>
+                    <div class="mt-3 pt-2 border-t border-slate-100 text-[11px] font-semibold text-slate-400">Rodinné domy</div>
+                  </div>
+                </label>
+
+              </div>
+            </div>
+
+            <!-- 5: Režim úpravy -->
+            <div>
+              <span class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-3">
+                5. Režim úpravy
+              </span>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <label class="cursor-pointer block">
+                  <input type="radio" name="mode" value="Zariadiť prázdnu miestnosť" checked class="mode-radio sr-only" />
+                  <div class="mode-card-body rounded-xl border-2 border-slate-200 p-4 transition-all hover:border-navy/50 flex items-start gap-3.5">
+                    <div class="w-9 h-9 rounded-lg bg-navy text-amberGold flex items-center justify-center shrink-0 mt-0.5">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                      </svg>
+                    </div>
+                    <div>
+                      <div class="font-extrabold text-sm text-navy">Zariadiť prázdnu miestnosť</div>
+                      <p class="text-xs text-slate-500 mt-0.5">Do holobytu alebo vypratanej izby vložíme nový dizajnový nábytok pri zachovaní podláh a okien.</p>
+                    </div>
+                  </div>
+                </label>
+
+                <label class="cursor-pointer block">
+                  <input type="radio" name="mode" value="Vypratať starý nábytok a nanovo zariadiť" class="mode-radio sr-only" />
+                  <div class="mode-card-body rounded-xl border-2 border-slate-200 p-4 transition-all hover:border-navy/50 flex items-start gap-3.5">
+                    <div class="w-9 h-9 rounded-lg bg-amberGold/15 text-amberGold-hover flex items-center justify-center shrink-0 mt-0.5">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                      </svg>
+                    </div>
+                    <div>
+                      <div class="font-extrabold text-sm text-navy">Vypratať starý nábytok a nanovo zariadiť</div>
+                      <p class="text-xs text-slate-500 mt-0.5">Digitálne odstránime pôvodný zastaraný nábytok či osobné veci a miestnosť nanovo zariadime.</p>
+                    </div>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <!-- 6: Poznámka k úprave -->
+            <div>
+              <label for="stagingNotes" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+                6. Poznámka k úprave <span class="text-slate-400 font-normal">(voliteľné)</span>
+              </label>
+              <textarea
+                id="stagingNotes"
+                name="notes"
+                rows="3"
+                placeholder="Napr. Zachovať drevenú podlahu a radiátory, pridať svetlú rohovú sedačku a jedálenský stôl pre 4 osoby..."
+                class="w-full rounded-xl border border-slate-300 bg-slateSoft px-4 py-3 text-sm font-medium text-navy focus:bg-white focus:border-amberGold focus:ring-2 focus:ring-amberGold/20 focus:outline-none"
+              ></textarea>
+            </div>
+
+            <!-- 7: Multi-Image Upload (max 4 photos) with HTML5 Canvas Compression -->
+            <div>
+              <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+                <label for="stagingPhotosInput" class="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                  7. Nahrať fotografie miestností <span class="text-amberGold">(Max. 4 fotky • Automatická kompresia)</span>
+                </label>
+                <button
+                  id="addSamplePhotoBtn"
+                  type="button"
+                  class="text-xs font-bold text-amberGold-hover hover:underline inline-flex items-center gap-1"
+                >
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                  </svg>
+                  <span>Vložiť ukážkovú fotku prázdneho bytu na vyskúšanie</span>
+                </button>
+              </div>
+
+              <!-- Dropzone -->
+              <label
+                id="photoDropzone"
+                for="stagingPhotosInput"
+                class="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-300 bg-slateSoft hover:bg-amberGold/5 hover:border-amberGold p-6 sm:p-8 cursor-pointer transition-all text-center"
+              >
+                <div class="w-12 h-12 rounded-full bg-white shadow-sm border border-slate-200 flex items-center justify-center text-amberGold mb-3">
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <div class="text-sm font-extrabold text-navy">
+                  Kliknite pre výber fotiek alebo ich sem presuňte myšou
+                </div>
+                <p class="text-xs text-slate-500 mt-1">
+                  Podporované formáty: JPG, PNG, WEBP (maximálne 4 zábery v jednej objednávke, klientska optimalizácia na 1400px JPEG)
+                </p>
+                <input
+                  id="stagingPhotosInput"
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  class="hidden"
+                />
+              </label>
+
+              <!-- Live Thumbnail Previews Grid -->
+              <div id="photoPreviewContainer" class="hidden mt-4">
+                <div class="flex items-center justify-between text-xs font-bold text-slate-600 mb-2">
+                  <span>Pripravené fotografie na odoslanie (<span id="photoCountBadge">0</span>/4):</span>
+                  <button id="clearAllPhotosBtn" type="button" class="text-rose-600 hover:underline">Odstrániť všetky</button>
+                </div>
+                <div id="photoPreviewGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-3"></div>
+              </div>
+            </div>
+
+            <!-- Form Error Alert -->
+            <div id="stagingFormError" class="hidden rounded-xl bg-rose-50 border border-rose-200 px-4 py-3 text-sm font-semibold text-rose-700"></div>
+
+            <!-- Submit Button -->
+            <div class="pt-2">
+              <button
+                id="stagingSubmitBtn"
+                type="submit"
+                class="w-full inline-flex items-center justify-center gap-3 bg-navy hover:bg-navy-light disabled:opacity-60 text-white font-extrabold px-8 py-4 rounded-xl shadow-architect transition-all text-base"
+              >
+                <svg id="stagingSpinner" class="hidden w-5 h-5 animate-spin text-amberGold" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                </svg>
+                <span id="stagingSubmitText">Odoslať fotky na AI spracovanie</span>
+                <svg class="w-5 h-5 text-amberGold" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              </button>
+              <p class="text-xs text-center text-slate-500 mt-3">
+                Garancia spokojnosti: Každá vizualizácia prechádza výstupnou kontrolou perspektívy a osvetlenia pred odoslaním na váš e-mail.
+              </p>
+            </div>
+          </form>
+
+          <!-- SUCCESS STATUS SCREEN (Hidden by default) -->
+          <div id="stagingSuccessScreen" class="hidden p-8 sm:p-12 text-center space-y-5" role="status" aria-live="polite">
+            <div class="w-16 h-16 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-600 flex items-center justify-center mx-auto">
+              <svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <h3 class="text-2xl sm:text-3xl font-extrabold text-navy max-w-xl mx-auto">
+              Objednávka prijatá! Vaše fotky boli zaradené do spracovania. Hotové vizualizácie vo vysokom rozlíšení vám pošleme na e-mail do niekoľkých hodín.
+            </h3>
+            <p id="stagingSuccessSummary" class="text-sm text-slate-600 max-w-lg mx-auto"></p>
+            <div class="pt-4">
+              <button
+                id="newStagingOrderBtn"
+                type="button"
+                class="inline-flex items-center gap-2 bg-navy hover:bg-navy-light text-white font-bold px-6 py-3 rounded-xl text-sm shadow-sm transition-all"
+              >
+                <span>Zadať ďalšiu objednávku AI Stagingu</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- SECTION 4: TRANSPARENT B2B PRICING                                    -->
+    <!-- ===================================================================== -->
+    <section id="cennik" class="py-16 sm:py-24 bg-white">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Section Heading -->
+        <div class="text-center max-w-3xl mx-auto mb-14">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-slate-100 text-navy text-xs font-bold uppercase tracking-wider mb-3">
+            Férové B2B podmienky bez skrytých poplatkov
+          </div>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-navy tracking-tight">
+            Zakladateľský cenník pre realitné kancelárie
+          </h2>
+          <p class="mt-3 text-base sm:text-lg text-slate-600">
+            Jediný nábor exkluzívnej nehnuteľnosti vám zaplatí prevádzku nástroja na niekoľko rokov dopredu.
+          </p>
+        </div>
+
+        <!-- Two Pricing Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto items-stretch">
+          
+          <!-- CARD 1: Balík ZAKLADATEĽ (Highlighted with Gold Badge "Najobľúbenejšie") -->
+          <div class="relative rounded-2xl bg-navy text-white p-7 sm:p-9 shadow-architect border-2 border-amberGold flex flex-col justify-between">
+            <!-- Gold Badge -->
+            <div class="absolute -top-4 left-7">
+              <span class="inline-flex items-center gap-1.5 bg-amberGold text-white text-xs font-extrabold uppercase tracking-wider px-4 py-1.5 rounded-full shadow-gold">
+                <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
+                Najobľúbenejšie
+              </span>
+            </div>
+
+            <div>
+              <div class="text-xs font-bold uppercase tracking-wider text-amberGold mt-1">Pre tímy a kancelárie</div>
+              <h3 class="text-2xl font-extrabold text-white mt-1">Balík ZAKLADATEĽ</h3>
+              <p class="text-sm text-slate-300 mt-2">
+                Kompletné riešenie pre aktívnych maklérov a realitné kancelárie so stálym prísunom náborov.
+              </p>
+
+              <div class="mt-6 pb-6 border-b border-slate-700/80 flex items-baseline gap-2">
+                <span class="text-4xl sm:text-5xl font-extrabold text-white">49 €</span>
+                <span class="text-sm font-semibold text-slate-300">/ mesiac <span class="text-amberGold">(bez viazanosti)</span></span>
+              </div>
+
+              <ul class="mt-6 space-y-3.5 text-sm text-slate-200">
+                <li class="flex items-start gap-3">
+                  <svg class="w-5 h-5 text-amberGold shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span><strong>Neobmedzené PDF oceňovacie reporty</strong> s vlastným logom</span>
+                </li>
+                <li class="flex items-start gap-3">
+                  <svg class="w-5 h-5 text-amberGold shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span><strong>25 AI Virtual Staging fotiek</strong> mesačne v cene balíka</span>
+                </li>
+                <li class="flex items-start gap-3">
+                  <svg class="w-5 h-5 text-amberGold shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span><strong>Dodanie vizualizácií do 12 hodín</strong> vo vysokom rozlíšení</span>
+                </li>
+                <li class="flex items-start gap-3">
+                  <svg class="w-5 h-5 text-amberGold shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span><strong>Prednostná podpora</strong> a individuálne úpravy podľa požiadaviek</span>
+                </li>
+              </ul>
+            </div>
+
+            <div class="mt-8 pt-4">
+              <button
+                type="button"
+                data-select-plan="Balík ZAKLADATEĽ (49 € / mesiac)"
+                class="plan-select-btn w-full inline-flex items-center justify-center gap-2 bg-amberGold hover:bg-amberGold-hover text-white font-extrabold px-6 py-4 rounded-xl shadow-gold transition-all text-base"
+              >
+                <span>Aktivovať prístup</span>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- CARD 2: Jednorazový balík (Pay-As-You-Go) -->
+          <div class="rounded-2xl bg-slateSoft text-navy p-7 sm:p-9 border border-slate-200 shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="text-xs font-bold uppercase tracking-wider text-slate-500 mt-1">Pay-As-You-Go</div>
+              <h3 class="text-2xl font-extrabold text-navy mt-1">Jednorazový balík</h3>
+              <p class="text-sm text-slate-600 mt-2">
+                Vyskúšajte silu AI Virtual Stagingu a značkových PDF reportov na konkrétnom byte vo vašom portfóliu.
+              </p>
+
+              <div class="mt-6 pb-6 border-b border-slate-200 flex items-baseline gap-2">
+                <span class="text-4xl sm:text-5xl font-extrabold text-navy">19 €</span>
+                <span class="text-sm font-semibold text-slate-500">/ balík <span class="text-slate-600">(jednorazovo)</span></span>
+              </div>
+
+              <ul class="mt-6 space-y-3.5 text-sm text-slate-700">
+                <li class="flex items-start gap-3">
+                  <svg class="w-5 h-5 text-amberGold shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span><strong>10 AI Virtual Staging fotiek</strong> podľa vášho výberu</span>
+                </li>
+                <li class="flex items-start gap-3">
+                  <svg class="w-5 h-5 text-amberGold shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span><strong>Neobmedzený prístup k PDF oceňovaču</strong> na 30 dní</span>
+                </li>
+                <li class="flex items-start gap-3">
+                  <svg class="w-5 h-5 text-amberGold shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span><strong>Ideálne na otestovanie</strong> na jednej nehnuteľnosti</span>
+                </li>
+              </ul>
+            </div>
+
+            <div class="mt-8 pt-4">
+              <button
+                type="button"
+                data-select-plan="Jednorazový balík (19 € / balík)"
+                class="plan-select-btn w-full inline-flex items-center justify-center gap-2 bg-navy hover:bg-navy-light text-white font-extrabold px-6 py-4 rounded-xl shadow-sm transition-all text-base"
+              >
+                <span>Vyskúšať na 1 byte</span>
+                <svg class="w-5 h-5 text-amberGold" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===================================================================== -->
+  <!-- FOOTER                                                                -->
+  <!-- ===================================================================== -->
+  <footer class="bg-navy text-white border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-amberGold font-extrabold text-sm">
+          P
+        </div>
+        <span class="text-sm sm:text-base font-bold text-slate-100">
+          PropTech Studio – Digitálne nástroje pre realitný trh
+        </span>
+      </div>
+      <div class="text-sm text-slate-300 font-medium">
+        Podpora: <a href="mailto:adamhorvat.financie@gmail.com" class="text-amberGold hover:underline font-semibold">adamhorvat.financie@gmail.com</a> | © 2026
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===================================================================== -->
+  <!-- APPLICATION JAVASCRIPT                                                -->
+  <!-- ===================================================================== -->
+  <script>
+    (function () {
+      'use strict';
+
+      // -------------------------------------------------------------------
+      // 1. NAVIGATION & SMOOTH SCROLLING
+      // -------------------------------------------------------------------
+      const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+      const mobileMenuDrawer = document.getElementById('mobileMenuDrawer');
+      const menuIconOpen = document.getElementById('menuIconOpen');
+      const menuIconClose = document.getElementById('menuIconClose');
+      const navTabBtns = document.querySelectorAll('.nav-tab-btn');
+
+      function setActiveNavButton(targetId) {
+        navTabBtns.forEach((btn) => {
+          const isMatch = btn.getAttribute('data-nav-target') === targetId;
+          if (isMatch) {
+            btn.classList.add('bg-white', 'text-navy', 'shadow-sm');
+            btn.classList.remove('text-slate-600');
+          } else {
+            btn.classList.remove('bg-white', 'text-navy', 'shadow-sm');
+            btn.classList.add('text-slate-600');
+          }
+        });
+      }
+
+      function scrollToSection(targetId) {
+        const el = document.getElementById(targetId);
+        if (!el) return;
+        setActiveNavButton(targetId);
+        const yOffset = -84;
+        const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }
+
+      document.querySelectorAll('[data-nav-target]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const targetId = btn.getAttribute('data-nav-target');
+          scrollToSection(targetId);
+          if (!mobileMenuDrawer.classList.contains('hidden')) {
+            mobileMenuDrawer.classList.add('hidden');
+            menuIconOpen.classList.remove('hidden');
+            menuIconClose.classList.add('hidden');
+            mobileMenuBtn.setAttribute('aria-expanded', 'false');
+          }
+        });
+      });
+
+      document.querySelectorAll('[data-scroll-to]').forEach((link) => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const targetId = link.getAttribute('data-scroll-to');
+          scrollToSection(targetId);
+        });
+      });
+
+      if (mobileMenuBtn) {
+        mobileMenuBtn.addEventListener('click', () => {
+          const isHidden = mobileMenuDrawer.classList.toggle('hidden');
+          menuIconOpen.classList.toggle('hidden', !isHidden);
+          menuIconClose.classList.toggle('hidden', isHidden);
+          mobileMenuBtn.setAttribute('aria-expanded', String(!isHidden));
+        });
+      }
+
+      // Highlight active section on scroll
+      const sectionIds = ['prehlad', 'pdf-ocenovac', 'ai-staging', 'cennik'];
+      window.addEventListener('scroll', () => {
+        const scrollPos = window.scrollY + 180;
+        for (let i = sectionIds.length - 1; i >= 0; i--) {
+          const sec = document.getElementById(sectionIds[i]);
+          if (sec && sec.offsetTop <= scrollPos) {
+            setActiveNavButton(sectionIds[i]);
+            break;
+          }
+        }
+      }, { passive: true });
+
+      // -------------------------------------------------------------------
+      // 2. HERO BEFORE / AFTER IMAGE COMPARISON SLIDER
+      // -------------------------------------------------------------------
+      const baSlider = document.getElementById('baSlider');
+      const baRangeInput = document.getElementById('baRangeInput');
+      const baBeforeImg = document.getElementById('baBeforeImg');
+      const baAfterImg = document.getElementById('baAfterImg');
+      const baBeforeLabel = document.getElementById('baBeforeLabel');
+      const baAfterLabel = document.getElementById('baAfterLabel');
+      const baPresetBtns = document.querySelectorAll('.ba-preset-btn');
+
+      const baPresets = [
+        {
+          beforeUrl: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1400&q=85',
+          afterUrl: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1400&q=85',
+          beforeText: 'Pôvodný stav (Prázdny byt)',
+          afterText: 'AI Virtual Staging (Škandinávsky štýl)',
+        },
+        {
+          beforeUrl: 'https://images.unsplash.com/photo-1560448204-603b3fc33ddc?auto=format&fit=crop&w=1400&q=85',
+          afterUrl: 'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?auto=format&fit=crop&w=1400&q=85',
+          beforeText: 'Pôvodný stav (Prázdna spálňa)',
+          afterText: 'AI Virtual Staging (Moderný minimalizmus)',
+        },
+        {
+          beforeUrl: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=1400&q=85',
+          afterUrl: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1400&q=85',
+          beforeText: 'Pôvodný stav (Nezariadený priestor)',
+          afterText: 'AI Virtual Staging (Luxusný štýl)',
+        }
+      ];
+
+      function updateSliderPosition(percent) {
+        const clamped = Math.max(2, Math.min(98, Number(percent)));
+        baSlider.style.setProperty('--slider-pos', clamped + '%');
+        if (baRangeInput.value !== String(clamped)) {
+          baRangeInput.value = String(clamped);
+        }
+      }
+
+      if (baRangeInput) {
+        baRangeInput.addEventListener('input', (e) => {
+          updateSliderPosition(e.target.value);
+        });
+      }
+
+      baPresetBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const idx = Number(btn.getAttribute('data-ba-preset')) || 0;
+          const preset = baPresets[idx];
+          if (!preset) return;
+
+          baBeforeImg.src = preset.beforeUrl;
+          baAfterImg.src = preset.afterUrl;
+          baBeforeLabel.innerHTML = `<span class="w-2 h-2 rounded-full bg-slate-400"></span> ${preset.beforeText}`;
+          baAfterLabel.innerHTML = `
+            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+            </svg>
+            <span>${preset.afterText}</span>
+          `;
+          updateSliderPosition(50);
+
+          baPresetBtns.forEach((b) => {
+            b.className = 'ba-preset-btn px-3 py-1.5 rounded-lg font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-all';
+          });
+          btn.className = 'ba-preset-btn px-3 py-1.5 rounded-lg font-bold bg-navy text-white transition-all';
+        });
+      });
+
+      // -------------------------------------------------------------------
+      // 3. INSTANT CLIENT-SIDE PDF PROPERTY VALUATION TOOL
+      // -------------------------------------------------------------------
+      const valAgencyName = document.getElementById('valAgencyName');
+      const valAgentContact = document.getElementById('valAgentContact');
+      const valLogoUpload = document.getElementById('valLogoUpload');
+      const logoUploadLabel = document.getElementById('logoUploadLabel');
+      const clearLogoBtn = document.getElementById('clearLogoBtn');
+
+      const valLocation = document.getElementById('valLocation');
+      const valPropertyType = document.getElementById('valPropertyType');
+      const valRooms = document.getElementById('valRooms');
+      const valArea = document.getElementById('valArea');
+      const valCondition = document.getElementById('valCondition');
+      const valConstruction = document.getElementById('valConstruction');
+
+      const extraBalcony = document.getElementById('extraBalcony');
+      const extraElevator = document.getElementById('extraElevator');
+      const extraCellar = document.getElementById('extraCellar');
+      const extraParking = document.getElementById('extraParking');
+
+      // PDF Preview DOM Elements
+      const pdfLogoImg = document.getElementById('pdfLogoImg');
+      const pdfLogoFallback = document.getElementById('pdfLogoFallback');
+      const pdfAgencyName = document.getElementById('pdfAgencyName');
+      const pdfCurrentDate = document.getElementById('pdfCurrentDate');
+      const pdfPriceRange = document.getElementById('pdfPriceRange');
+      const pdfCenterPrice = document.getElementById('pdfCenterPrice');
+      const pdfPricePerM2 = document.getElementById('pdfPricePerM2');
+      const pdfSpecLocation = document.getElementById('pdfSpecLocation');
+      const pdfSpecTypeRooms = document.getElementById('pdfSpecTypeRooms');
+      const pdfSpecArea = document.getElementById('pdfSpecArea');
+      const pdfSpecCondition = document.getElementById('pdfSpecCondition');
+      const pdfSpecConstruction = document.getElementById('pdfSpecConstruction');
+      const pdfSpecExtras = document.getElementById('pdfSpecExtras');
+      const pdfAgentContact = document.getElementById('pdfAgentContact');
+
+      // Set current Slovak date
+      const now = new Date();
+      pdfCurrentDate.textContent = now.toLocaleDateString('sk-SK', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      });
+
+      function formatEUR(num) {
+        return Math.round(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' €';
+      }
+
+      function calculateAndRenderValuation() {
+        // Branding
+        const agencyText = (valAgencyName.value || '').trim() || 'Vaša Realitná Kancelária s.r.o.';
+        const contactText = (valAgentContact.value || '').trim() || 'Realitný maklér | Kontakt neuvedený';
+        pdfAgencyName.textContent = agencyText;
+        pdfAgentContact.textContent = contactText;
+
+        // Property Parameters
+        const locOption = valLocation.options[valLocation.selectedIndex];
+        const baseM2 = parseFloat(valLocation.value) || 3650;
+        const cityName = locOption.getAttribute('data-city') || locOption.text;
+
+        const propType = valPropertyType.value || 'Byt';
+        const rooms = valRooms.value || '3-izbový';
+        const area = Math.max(10, parseFloat(valArea.value) || 68);
+
+        const condOption = valCondition.options[valCondition.selectedIndex];
+        const conditionMult = parseFloat(valCondition.value) || 1.08;
+        const conditionLabel = condOption.getAttribute('data-label') || condOption.text;
+
+        const constOption = valConstruction.options[valConstruction.selectedIndex];
+        const constructionMult = parseFloat(valConstruction.value) || 1.05;
+        const constructionLabel = constOption.getAttribute('data-label') || constOption.text;
+
+        // Extras
+        let extrasPct = 0;
+        const extrasList = [];
+        if (extraBalcony.checked) {
+          extrasPct += 0.04;
+          extrasList.push('Balkón / Lodžia (+4 %)');
+        }
+        if (extraElevator.checked) {
+          extrasPct += 0.02;
+          extrasList.push('Výťah (+2 %)');
+        }
+        if (extraCellar.checked) {
+          extrasPct += 0.02;
+          extrasList.push('Pivnica (+2 %)');
+        }
+
+        const parkingFlat = extraParking.checked ? 8000 : 0;
+        if (extraParking.checked) {
+          extrasList.push('Garáž / Parkovacie státie (+8 000 €)');
+        }
+
+        const extrasMultiplier = 1 + extrasPct;
+
+        // Core Formula: Base_m2 * Area * Condition * Construction * Extras + Parking
+        const centerPrice = Math.round(baseM2 * area * conditionMult * constructionMult * extrasMultiplier + parkingFlat);
+        const minPrice = Math.round(centerPrice * 0.96);
+        const maxPrice = Math.round(centerPrice * 1.04);
+        const avgM2 = Math.round(centerPrice / area);
+
+        // Update Live A4 Preview
+        pdfPriceRange.textContent = `${formatEUR(minPrice)} – ${formatEUR(maxPrice)}`;
+        pdfCenterPrice.textContent = formatEUR(centerPrice);
+        pdfPricePerM2.textContent = `${formatEUR(avgM2)}/m²`;
+
+        pdfSpecLocation.textContent = `${cityName} (základná sadzba ${formatEUR(baseM2)}/m²)`;
+        pdfSpecTypeRooms.textContent = `${propType} • ${rooms}`;
+        pdfSpecArea.textContent = `${area} m²`;
+        pdfSpecCondition.textContent = `${conditionLabel} (koeficient ${conditionMult.toFixed(2)})`;
+        pdfSpecConstruction.textContent = `${constructionLabel} (koeficient ${constructionMult.toFixed(2)})`;
+        pdfSpecExtras.textContent = extrasList.length > 0 ? extrasList.join(', ') : 'Štandardné vybavenie (bez príplatkov)';
+      }
+
+      // Bind real-time listeners
+      [
+        valAgencyName,
+        valAgentContact,
+        valLocation,
+        valPropertyType,
+        valRooms,
+        valArea,
+        valCondition,
+        valConstruction,
+        extraBalcony,
+        extraElevator,
+        extraCellar,
+        extraParking
+      ].forEach((inputEl) => {
+        if (!inputEl) return;
+        inputEl.addEventListener('input', calculateAndRenderValuation);
+        inputEl.addEventListener('change', calculateAndRenderValuation);
+      });
+
+      // Agency Logo Upload via FileReader
+      if (valLogoUpload) {
+        valLogoUpload.addEventListener('change', (e) => {
+          const file = e.target.files && e.target.files[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = function (evt) {
+            pdfLogoImg.src = evt.target.result;
+            pdfLogoImg.classList.remove('hidden');
+            pdfLogoFallback.classList.add('hidden');
+            logoUploadLabel.textContent = file.name.slice(0, 26);
+            clearLogoBtn.classList.remove('hidden');
+          };
+          reader.readAsDataURL(file);
+        });
+      }
+
+      if (clearLogoBtn) {
+        clearLogoBtn.addEventListener('click', () => {
+          valLogoUpload.value = '';
+          pdfLogoImg.src = '';
+          pdfLogoImg.classList.add('hidden');
+          pdfLogoFallback.classList.remove('hidden');
+          logoUploadLabel.textContent = 'Vybrať súbor loga (PNG / JPG / SVG)';
+          clearLogoBtn.classList.add('hidden');
+        });
+      }
+
+      // Initial calculation on page load
+      calculateAndRenderValuation();
+
+      // Export A4 PDF via html2pdf.js
+      async function exportValuationPdf(triggerBtn) {
+        const reportEl = document.getElementById('pdf-report-sheet');
+        if (!reportEl) return;
+
+        const originalHtml = triggerBtn ? triggerBtn.innerHTML : '';
+        if (triggerBtn) {
+          triggerBtn.disabled = true;
+          triggerBtn.innerHTML = `<span>Generujem PDF dokument...</span>`;
+        }
+
+        try {
+          if (typeof window.html2pdf === 'undefined') {
+            window.print();
+            return;
+          }
+
+          const opt = {
+            margin: [8, 8, 8, 8],
+            filename: 'Odhad_ceny_nehnutelnosti.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: {
+              scale: 2,
+              useCORS: true,
+              letterRendering: true,
+              scrollY: 0,
+            },
+            jsPDF: {
+              unit: 'mm',
+              format: 'a4',
+              orientation: 'portrait'
+            }
+          };
+
+          await window.html2pdf().set(opt).from(reportEl).save();
+        } catch (err) {
+          console.error('Chyba pri generovaní PDF:', err);
+          window.print();
+        } finally {
+          if (triggerBtn) {
+            triggerBtn.disabled = false;
+            triggerBtn.innerHTML = originalHtml;
+          }
+        }
+      }
+
+      ['downloadPdfBtnTop', 'downloadPdfBtnLeft', 'downloadPdfBtnBottom'].forEach((btnId) => {
+        const btn = document.getElementById(btnId);
+        if (btn) {
+          btn.addEventListener('click', () => exportValuationPdf(btn));
+        }
+      });
+
+      // -------------------------------------------------------------------
+      // 4. AI VIRTUAL STAGING ORDER PORTAL & CLIENT-SIDE IMAGE COMPRESSION
+      // -------------------------------------------------------------------
+      const stagingForm = document.getElementById('stagingOrderForm');
+      const stagingPhotosInput = document.getElementById('stagingPhotosInput');
+      const photoDropzone = document.getElementById('photoDropzone');
+      const photoPreviewContainer = document.getElementById('photoPreviewContainer');
+      const photoPreviewGrid = document.getElementById('photoPreviewGrid');
+      const photoCountBadge = document.getElementById('photoCountBadge');
+      const clearAllPhotosBtn = document.getElementById('clearAllPhotosBtn');
+      const addSamplePhotoBtn = document.getElementById('addSamplePhotoBtn');
+      const stagingFormError = document.getElementById('stagingFormError');
+      const stagingSubmitBtn = document.getElementById('stagingSubmitBtn');
+      const stagingSpinner = document.getElementById('stagingSpinner');
+      const stagingSubmitText = document.getElementById('stagingSubmitText');
+      const stagingSuccessScreen = document.getElementById('stagingSuccessScreen');
+      const stagingSuccessSummary = document.getElementById('stagingSuccessSummary');
+      const newStagingOrderBtn = document.getElementById('newStagingOrderBtn');
+
+      // Store up to 4 compressed photos: { name, dataUrl, base64, width, height, sizeKb }
+      let compressedPhotos = [];
+
+      function showStagingError(msg) {
+        stagingFormError.textContent = msg;
+        stagingFormError.classList.remove('hidden');
+      }
+
+      function hideStagingError() {
+        stagingFormError.classList.add('hidden');
+        stagingFormError.textContent = '';
+      }
+
+      /**
+       * HTML5 <canvas> Image Compressor:
+       * Resizes image to maxWidth = 1400px (preserving aspect ratio) and encodes as JPEG 0.82
+       */
+      function compressImageElementToJpeg(imgEl, fileName) {
+        const MAX_WIDTH = 1400;
+        let width = imgEl.naturalWidth || imgEl.width || 1200;
+        let height = imgEl.naturalHeight || imgEl.height || 800;
+
+        if (width > MAX_WIDTH) {
+          height = Math.round((height * MAX_WIDTH) / width);
+          width = MAX_WIDTH;
+        }
+
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, width, height);
+        ctx.drawImage(imgEl, 0, 0, width, height);
+
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.82);
+        const base64 = dataUrl.replace(/^data:image\/jpeg;base64,/, '');
+        const sizeKb = Math.round((base64.length * 3) / 4 / 1024);
+
+        return {
+          name: fileName || `izba-${compressedPhotos.length + 1}.jpg`,
+          dataUrl,
+          base64,
+          width,
+          height,
+          sizeKb
+        };
+      }
+
+      function compressFileViaCanvas(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onerror = () => reject(new Error('Chyba pri čítaní súboru.'));
+          reader.onload = (evt) => {
+            const img = new Image();
+            img.onerror = () => reject(new Error('Súbor nie je platný obrázok.'));
+            img.onload = () => {
+              try {
+                const compressed = compressImageElementToJpeg(img, file.name);
+                resolve(compressed);
+              } catch (err) {
+                reject(err);
+              }
+            };
+            img.src = evt.target.result;
+          };
+          reader.readAsDataURL(file);
+        });
+      }
+
+      function renderPhotoPreviews() {
+        photoCountBadge.textContent = String(compressedPhotos.length);
+        if (compressedPhotos.length === 0) {
+          photoPreviewContainer.classList.add('hidden');
+          photoPreviewGrid.innerHTML = '';
+          return;
+        }
+
+        photoPreviewContainer.classList.remove('hidden');
+        photoPreviewGrid.innerHTML = compressedPhotos
+          .map(
+            (item, idx) => `
+          <div class="relative group rounded-xl overflow-hidden border border-slate-200 bg-slate-50 shadow-sm">
+            <img src="${item.dataUrl}" alt="Náhľad ${idx + 1}" class="w-full h-28 object-cover block" />
+            <div class="p-2 bg-white flex items-center justify-between text-[11px]">
+              <span class="font-bold text-navy truncate max-w-[110px]" title="${item.name}">izba-${idx + 1}.jpg</span>
+              <span class="text-emerald-600 font-bold">${item.sizeKb} KB</span>
+            </div>
+            <button
+              type="button"
+              data-remove-photo="${idx}"
+              class="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-navy/85 text-white hover:bg-rose-600 flex items-center justify-center text-xs font-bold shadow"
+              title="Odstrániť fotku"
+            >
+              ×
+            </button>
+          </div>
+        `
+          )
+          .join('');
+
+        photoPreviewGrid.querySelectorAll('[data-remove-photo]').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const idx = Number(btn.getAttribute('data-remove-photo'));
+            compressedPhotos.splice(idx, 1);
+            renderPhotoPreviews();
+          });
+        });
+      }
+
+      async function handleFilesSelected(fileList) {
+        hideStagingError();
+        const files = Array.from(fileList || []).filter((f) => f.type.startsWith('image/'));
+        if (files.length === 0) return;
+
+        const remainingSlots = 4 - compressedPhotos.length;
+        if (remainingSlots <= 0) {
+          showStagingError('Maximálny počet fotografií v jednej objednávke je 4.');
+          return;
+        }
+
+        const toProcess = files.slice(0, remainingSlots);
+        if (files.length > remainingSlots) {
+          showStagingError(`Pridané prvé ${remainingSlots} fotografie (limit je max. 4 fotky na objednávku).`);
+        }
+
+        for (const file of toProcess) {
+          try {
+            const compressed = await compressFileViaCanvas(file);
+            compressedPhotos.push(compressed);
+          } catch (err) {
+            console.error(err);
+            showStagingError('Niektorú fotografiu sa nepodarilo spracovať.');
+          }
+        }
+        renderPhotoPreviews();
+        stagingPhotosInput.value = '';
+      }
+
+      if (stagingPhotosInput) {
+        stagingPhotosInput.addEventListener('change', (e) => {
+          handleFilesSelected(e.target.files);
+        });
+      }
+
+      if (photoDropzone) {
+        ['dragenter', 'dragover'].forEach((evtName) => {
+          photoDropzone.addEventListener(evtName, (e) => {
+            e.preventDefault();
+            photoDropzone.classList.add('border-amberGold', 'bg-amberGold/10');
+          });
+        });
+        ['dragleave', 'drop'].forEach((evtName) => {
+          photoDropzone.addEventListener(evtName, (e) => {
+            e.preventDefault();
+            photoDropzone.classList.remove('border-amberGold', 'bg-amberGold/10');
+          });
+        });
+        photoDropzone.addEventListener('drop', (e) => {
+          if (e.dataTransfer && e.dataTransfer.files) {
+            handleFilesSelected(e.dataTransfer.files);
+          }
+        });
+      }
+
+      if (clearAllPhotosBtn) {
+        clearAllPhotosBtn.addEventListener('click', () => {
+          compressedPhotos = [];
+          renderPhotoPreviews();
+        });
+      }
+
+      // Generate a realistic empty architectural room sample on <canvas> (1400x933 JPEG 0.82) for instant 1-click testing
+      if (addSamplePhotoBtn) {
+        addSamplePhotoBtn.addEventListener('click', () => {
+          hideStagingError();
+          if (compressedPhotos.length >= 4) {
+            showStagingError('Dosiahli ste limit maximálne 4 fotografií.');
+            return;
+          }
+
+          const canvas = document.createElement('canvas');
+          canvas.width = 1400;
+          canvas.height = 933;
+          const ctx = canvas.getContext('2d');
+
+          // Draw bright empty room perspective
+          ctx.fillStyle = '#F1F5F9';
+          ctx.fillRect(0, 0, 1400, 933);
+          // Back wall
+          ctx.fillStyle = '#E2E8F0';
+          ctx.fillRect(180, 110, 1040, 540);
+          // Floor (warm oak parquet)
+          const floorGrad = ctx.createLinearGradient(0, 650, 0, 933);
+          floorGrad.addColorStop(0, '#D6B88E');
+          floorGrad.addColorStop(1, '#B89262');
+          ctx.fillStyle = floorGrad;
+          ctx.beginPath();
+          ctx.moveTo(180, 650);
+          ctx.lineTo(1220, 650);
+          ctx.lineTo(1400, 933);
+          ctx.lineTo(0, 933);
+          ctx.closePath();
+          ctx.fill();
+
+          // Window frame on back wall
+          ctx.fillStyle = '#FFFFFF';
+          ctx.fillRect(460, 180, 480, 340);
+          ctx.strokeStyle = '#94A3B8';
+          ctx.lineWidth = 8;
+          ctx.strokeRect(460, 180, 480, 340);
+          ctx.beginPath();
+          ctx.moveTo(700, 180);
+          ctx.lineTo(700, 520);
+          ctx.stroke();
+
+          // Label watermark
+          ctx.fillStyle = '#0F172A';
+          ctx.font = 'bold 28px sans-serif';
+          ctx.fillText(`Ukážková fotka prázdneho bytu #${compressedPhotos.length + 1} (1400px JPEG 0.82)`, 230, 610);
+
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.82);
+          const base64 = dataUrl.replace(/^data:image\/jpeg;base64,/, '');
+          const sizeKb = Math.round((base64.length * 3) / 4 / 1024);
+
+          compressedPhotos.push({
+            name: `ukazka-izba-${compressedPhotos.length + 1}.jpg`,
+            dataUrl,
+            base64,
+            width: 1400,
+            height: 933,
+            sizeKb
+          });
+          renderPhotoPreviews();
+        });
+      }
+
+      // Pricing Plan Selection -> Pre-fills Order Form
+      const selectedPlanBanner = document.getElementById('selectedPlanBanner');
+      const selectedPlanText = document.getElementById('selectedPlanText');
+      const stagingPlanInput = document.getElementById('stagingPlanInput');
+
+      document.querySelectorAll('.plan-select-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const planName = btn.getAttribute('data-select-plan');
+          if (planName) {
+            stagingPlanInput.value = planName;
+            selectedPlanText.textContent = planName;
+            selectedPlanBanner.classList.remove('hidden');
+            selectedPlanBanner.classList.add('inline-flex');
+          }
+          scrollToSection('ai-staging');
+          setTimeout(() => {
+            const nameInput = document.getElementById('stagingAgentName');
+            if (nameInput) nameInput.focus();
+          }, 500);
+        });
+      });
+
+      // Handle Staging Order Form Submit
+      if (stagingForm) {
+        stagingForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          hideStagingError();
+
+          const agentName = (document.getElementById('stagingAgentName').value || '').trim();
+          const email = (document.getElementById('stagingEmail').value || '').trim();
+          const roomType = document.getElementById('stagingRoomType').value;
+          const styleRadio = stagingForm.querySelector('input[name="style"]:checked');
+          const modeRadio = stagingForm.querySelector('input[name="mode"]:checked');
+          const notes = (document.getElementById('stagingNotes').value || '').trim();
+          const plan = stagingPlanInput.value || 'Štandardná objednávka';
+
+          if (!agentName) {
+            showStagingError('Prosím, vyplňte meno makléra alebo názov realitnej kancelárie.');
+            document.getElementById('stagingAgentName').focus();
+            return;
+          }
+
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!email || !emailRegex.test(email)) {
+            showStagingError('Prosím, zadajte platnú e-mailovú adresu pre doručenie hotových vizualizácií.');
+            document.getElementById('stagingEmail').focus();
+            return;
+          }
+
+          const style = styleRadio ? styleRadio.value : 'Škandinávsky';
+          const mode = modeRadio ? modeRadio.value : 'Zariadiť prázdnu miestnosť';
+
+          const payload = {
+            agentName,
+            email,
+            roomType,
+            style,
+            mode,
+            notes,
+            plan,
+            images: compressedPhotos.map((p, idx) => ({
+              filename: `izba-${idx + 1}.jpg`,
+              base64: p.base64
+            }))
+          };
+
+          stagingSubmitBtn.disabled = true;
+          stagingSpinner.classList.remove('hidden');
+          stagingSubmitText.textContent = 'Komprimujem a odosielam fotky...';
+
+          try {
+            const response = await fetch('/.netlify/functions/staging-order', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+              // Ak beží lokálny náhľad bez Netlify CLI (napr. 404/501), spracujeme ukážkovo
+              const isLocalPreview =
+                window.location.protocol === 'file:' ||
+                window.location.hostname === 'localhost' ||
+                window.location.hostname === '127.0.0.1';
+
+              if (isLocalPreview && (response.status === 404 || response.status === 405 || response.status === 500)) {
+                console.info('Lokálny režim náhľadu: simulácia úspešného prijatia objednávky.');
+              } else {
+                const errData = await response.json().catch(() => ({}));
+                throw new Error(errData.error || 'Odoslanie objednávky zlyhalo (chyba servera).');
+              }
+            }
+
+            // Show Success Status Screen
+            stagingForm.classList.add('hidden');
+            stagingSuccessSummary.textContent = `Zhrnutie: ${roomType} • Štýl: ${style} • Režim: ${mode} • Doručenie na: ${email}`;
+            stagingSuccessScreen.classList.remove('hidden');
+          } catch (err) {
+            const isLocalPreview =
+              window.location.protocol === 'file:' ||
+              window.location.hostname === 'localhost' ||
+              window.location.hostname === '127.0.0.1';
+
+            if (isLocalPreview) {
+              stagingForm.classList.add('hidden');
+              stagingSuccessSummary.textContent = `Zhrnutie: ${roomType} • Štýl: ${style} • Režim: ${mode} • Doručenie na: ${email}`;
+              stagingSuccessScreen.classList.remove('hidden');
+            } else {
+              console.error(err);
+              showStagingError(
+                err.message || 'Nastala chyba pri odosielaní. Skúste to znova alebo nás kontaktujte na adamhorvat.financie@gmail.com.'
+              );
+            }
+          } finally {
+            stagingSubmitBtn.disabled = false;
+            stagingSpinner.classList.add('hidden');
+            stagingSubmitText.textContent = 'Odoslať fotky na AI spracovanie';
+          }
+        });
+      }
+
+      if (newStagingOrderBtn) {
+        newStagingOrderBtn.addEventListener('click', () => {
+          stagingSuccessScreen.classList.add('hidden');
+          stagingForm.classList.remove('hidden');
+          compressedPhotos = [];
+          renderPhotoPreviews();
+          document.getElementById('stagingNotes').value = '';
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
